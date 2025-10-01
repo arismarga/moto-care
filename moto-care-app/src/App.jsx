@@ -1,34 +1,80 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import CarInfo from './Hello'
+
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [bikes, setBikes] = useState([
+    { id: 1, brand: "Honda", model: "CB500F", year: 2020 },
+    { id: 2, brand: "Yamaha", model: "MT-07", year: 2022 },
+  ])
+
+  // State για τη φόρμα (controlled inputs)
+  const [form, setForm] = useState({
+    brand: '',
+    model: '',
+    year: ''
+  })
+
+  function handleChange(e) {
+    const { name, value } = e.target
+    setForm(prev => ({ ...prev, [name]: value }))
+  }
+
+  function handleAdd(e) {
+    e.preventDefault() // μη γίνει page refresh
+    // Βασικός έλεγχος
+    if (!form.brand || !form.model || !form.year) return
+
+    const newBike = {
+      id: Date.now(),
+      brand: form.brand,
+      model: form.model,
+      year: Number(form.year) // κράτα το ως αριθμό
+    }
+
+    setBikes(prev => [...prev, newBike])
+    setForm({ brand: '', model: '', year: '' }) // καθάρισε φόρμα
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <main style={{ padding: 16 }}>
+      <h1>Λίστα Μηχανών</h1>
+
+      {/* Φόρμα εισαγωγής */}
+      <form onSubmit={handleAdd} style={{ display: 'grid', gap: 8, maxWidth: 320, marginBottom: 16 }}>
+        <input
+          name="brand"
+          placeholder="Μάρκα (π.χ. Honda)"
+          value={form.brand}
+          onChange={handleChange}
+        />
+        <input
+          name="model"
+          placeholder="Μοντέλο (π.χ. CB500F)"
+          value={form.model}
+          onChange={handleChange}
+        />
+        <input
+          name="year"
+          type="number"
+          placeholder="Έτος (π.χ. 2020)"
+          value={form.year}
+          onChange={handleChange}
+        />
+        <button type="submit">Πρόσθεσε Μηχανή</button>
+      </form>
+
+      {bikes.map(bike => (
+        <CarInfo
+          key={bike.id}
+          brand={bike.brand}
+          model={bike.model}
+          year={bike.year}
+        />
+      ))}
+    </main>
   )
 }
 
