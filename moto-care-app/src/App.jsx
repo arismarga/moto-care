@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import './App.css'
-import CarInfo from './Hello'
+import CarInfo from './Car'
 
 
 
